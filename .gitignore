@@ -147,7 +147,7 @@ reports/
 *.pth
 *.pt
 *.bin
-models/
+/models/
 
 # Firecrawl API key
 .env.local
