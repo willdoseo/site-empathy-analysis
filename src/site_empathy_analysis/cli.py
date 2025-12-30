@@ -411,7 +411,7 @@ def run_interactive():
 
 @click.group(invoke_without_command=True)
 @click.pass_context
-@click.version_option(version="0.1.0", prog_name="site-empathy")
+@click.version_option(version="0.1.1", prog_name="site-empathy")
 def main(ctx):
     """
     🔬 Voight-Kampff Empathy Analysis System

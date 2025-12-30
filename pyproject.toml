@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "site-empathy-analysis"
-version = "0.1.0"
+version = "0.1.1"
 description = "Analyze website content for empathy using NLP, powered by Firecrawl and the Sharma et al. (2020) empathy framework"
 readme = "README.md"
 license = {text = "MIT"}
