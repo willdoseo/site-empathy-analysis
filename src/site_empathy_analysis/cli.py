@@ -108,6 +108,65 @@ def get_saved_api_key() -> Optional[str]:
     return None
 
 
+def ensure_models_downloaded():
+    """Ensure empathy models are downloaded before analysis."""
+    from site_empathy_analysis.models.empathy_model import MODEL_CACHE_DIR, MODEL_BASE_URL
+    import requests
+    from tqdm import tqdm
+    
+    MODEL_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    
+    models = ["modern_ER.pth", "modern_IP.pth", "modern_EX.pth"]
+    missing = [m for m in models if not (MODEL_CACHE_DIR / m).exists()]
+    
+    if not missing:
+        return True  # All models present
+    
+    console.print()
+    console.print(Panel(
+        f"[bold {CORAL}]📥 NEURAL CORE INITIALIZATION[/]\n\n"
+        f"[dim]First-run setup: Downloading empathy analysis models (~3GB total)\n"
+        f"This only happens once - models will be cached for future use.[/]\n\n"
+        f"[dim italic]\"I've seen things you people wouldn't believe...\"[/]",
+        border_style=CORAL
+    ))
+    console.print()
+    
+    for filename in missing:
+        dim = filename.replace("modern_", "").replace(".pth", "")
+        url = f"{MODEL_BASE_URL}/{filename}"
+        cache_path = MODEL_CACHE_DIR / filename
+        
+        console.print(f"[{TEAL}]Downloading {dim} model...[/]")
+        console.print(f"[dim]   {url}[/]")
+        
+        try:
+            response = requests.get(url, stream=True, timeout=30)
+            response.raise_for_status()
+            
+            total_size = int(response.headers.get('content-length', 0))
+            
+            with open(cache_path, 'wb') as f:
+                with tqdm(total=total_size, unit='B', unit_scale=True, desc=f"   {dim}") as pbar:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        f.write(chunk)
+                        pbar.update(len(chunk))
+            
+            console.print(f"[{TEAL}]   ✓ {dim} model ready[/]")
+            console.print()
+            
+        except requests.exceptions.RequestException as e:
+            console.print(f"[{CORAL}]   ✗ Download failed: {e}[/]")
+            if cache_path.exists():
+                cache_path.unlink()
+            console.print(f"[{CORAL}]Cannot proceed without models. Check your internet connection.[/]")
+            sys.exit(1)
+    
+    console.print(f"[bold {TEAL}]✓ All neural cores initialized[/]")
+    console.print()
+    return True
+
+
 def save_api_key(key: str):
     """Save API key to config file."""
     config_dir = Path.home() / ".config" / "site-empathy"
@@ -311,6 +370,9 @@ def run_interactive():
     console.print(f"[{TEAL}]Initializing pupillary response tracking...[/]")
     console.print()
     
+    # Ensure models are downloaded before analysis
+    ensure_models_downloaded()
+    
     # Run the analysis
     try:
         from site_empathy_analysis.analyzer import SiteEmpathyAnalyzer
@@ -385,6 +447,9 @@ def analyze(url: str, output: Optional[str], max_pages: int, quiet: bool, key: O
     if not api_key:
         api_key = get_api_key_interactive()
     
+    # Ensure models are downloaded before analysis
+    ensure_models_downloaded()
+    
     try:
         from site_empathy_analysis.analyzer import SiteEmpathyAnalyzer
         
@@ -434,6 +499,9 @@ def batch(input_file: str, output: str, max_pages: int, key: Optional[str]):
     api_key = key or os.getenv("FIRECRAWL_API_KEY") or get_saved_api_key()
     if not api_key:
         api_key = get_api_key_interactive()
+    
+    # Ensure models are downloaded before analysis
+    ensure_models_downloaded()
     
     try:
         from site_empathy_analysis.analyzer import SiteEmpathyAnalyzer, export_batch_to_csv
