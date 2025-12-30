@@ -31,7 +31,7 @@ The output is a detailed **CSV report** with:
 ### Installation
 
 ```bash
-pip install site-empathy-analysis
+pip install git+https://github.com/willdoseo/site-empathy-analysis.git
 ```
 
 ### Get Your API Key
@@ -304,17 +304,11 @@ For production use or if the default download fails, you can host your own model
 
 3. Models will be downloaded from `{SITE_EMPATHY_MODEL_URL}/modern_ER.pth`, etc.
 
-### HuggingFace Hub (Recommended)
+### HuggingFace Hub
 
-For public distribution, we recommend hosting on HuggingFace:
+Models are hosted on HuggingFace and download automatically on first use:
 
-```bash
-# Upload models to HuggingFace
-huggingface-cli upload your-username/site-empathy-models ./models
-
-# Set the URL
-export SITE_EMPATHY_MODEL_URL="https://huggingface.co/your-username/site-empathy-models/resolve/main"
-```
+**Models:** [huggingface.co/willdoseo/site-empathy-models](https://huggingface.co/willdoseo/site-empathy-models)
 
 ## 🔒 Privacy & Security
 
