@@ -1,0 +1,176 @@
+<h1>How to Run an Empathy Audit on Your Website</h1>
+
+<p><em>A step-by-step guide to measuring your site's emotional connection using AI-powered analysis.</em></p>
+
+<hr />
+
+<h2>What This Tool Does</h2>
+
+<p>Site Empathy Analysis crawls your website and scores each page for empathic language using a peer-reviewed framework (Sharma et al., 2020). You get a CSV report with page-by-page scores and specific phrases flagged as empathic or non-empathic.</p>
+
+<p>Three dimensions are measured:</p>
+
+<ul>
+<li><strong>Emotional Reactions (ER)</strong> — Expressions of warmth and compassion</li>
+<li><strong>Interpretations (IP)</strong> — Acknowledging and naming feelings</li>
+<li><strong>Explorations (EX)</strong> — Questions that invite dialogue</li>
+</ul>
+
+<hr />
+
+<h2>How the Models Work</h2>
+
+<p>The empathy detection is powered by three RoBERTa-based neural networks—one for each dimension (ER, IP, EX). These models were trained on real therapeutic conversations from mental health support platforms.</p>
+
+<h3>The Research</h3>
+
+<p>The framework comes from Sharma et al. (2020), published at EMNLP (a top NLP conference). Researchers analyzed thousands of peer support conversations and identified the specific language patterns that convey empathy.</p>
+
+<h3>Model Download</h3>
+
+<p>On first run, the tool automatically downloads the trained model weights from HuggingFace (~3GB total). This only happens once—models are cached locally at <code>~/.cache/site-empathy/models/</code>.</p>
+
+<p>You can also manually manage models:</p>
+
+<pre><code># Check model status
+site-empathy models --status
+
+# Download models manually
+site-empathy models --download
+
+# Clear cached models
+site-empathy models --clear</code></pre>
+
+<hr />
+
+<h2>Setup (5 Minutes)</h2>
+
+<h3>Requirements</h3>
+
+<ul>
+<li>Python 3.9+</li>
+<li>Firecrawl API key (free at <a href="https://firecrawl.dev">firecrawl.dev</a>)</li>
+<li>~3GB disk space for models (downloaded on first run)</li>
+</ul>
+
+<h3>Install</h3>
+
+<pre><code>pip install site-empathy-analysis</code></pre>
+
+<h3>Run</h3>
+
+<pre><code>site-empathy</code></pre>
+
+<p>The interactive CLI will:</p>
+<ol>
+<li>Prompt for your Firecrawl API key (saved for future use)</li>
+<li>Download empathy models if not already cached</li>
+<li>Ask for target URL and crawl options</li>
+<li>Crawl and analyze your site</li>
+<li>Generate a CSV report</li>
+</ol>
+
+<hr />
+
+<h2>Crawl Options</h2>
+
+<p>When prompted, choose your scope:</p>
+
+<ul>
+<li><strong>Entire site</strong> — Crawls all pages (up to 10,000)</li>
+<li><strong>Specific folder</strong> — e.g., just /blog/ or /services/</li>
+<li><strong>Limited pages</strong> — Set a max page count</li>
+</ul>
+
+<hr />
+
+<h2>Interpreting Results</h2>
+
+<p>The output CSV includes an empathy score (0-1) for each page:</p>
+
+<table>
+<thead>
+<tr><th>Score</th><th>Rating</th><th>Action</th></tr>
+</thead>
+<tbody>
+<tr><td>0.35+</td><td>High</td><td>No changes needed</td></tr>
+<tr><td>0.20–0.35</td><td>Moderate</td><td>Review for improvement</td></tr>
+<tr><td>&lt;0.20</td><td>Low</td><td>Prioritize for rewrite</td></tr>
+</tbody>
+</table>
+
+<p>You also get dimension breakdowns (ER, IP, EX) to identify <em>which type</em> of empathy is missing.</p>
+
+<h3>What the Scores Mean</h3>
+
+<ul>
+<li><strong>High ER, Low IP:</strong> Warm but not showing understanding—add acknowledgment of feelings</li>
+<li><strong>High IP, Low ER:</strong> Clinical understanding without warmth—add compassionate language</li>
+<li><strong>Low EX:</strong> One-way communication—add questions and invitations to engage</li>
+</ul>
+
+<hr />
+
+<h2>Fixing Low Scores</h2>
+
+<h3>Low ER (Emotional Reactions)</h3>
+
+<p>Add warmth. Replace clinical language with compassionate phrasing.</p>
+
+<p><strong>Before:</strong> "We provide treatment services."<br />
+<strong>After:</strong> "We're here to help you through this."</p>
+
+<h3>Low IP (Interpretations)</h3>
+
+<p>Name emotions. Show you understand what visitors feel.</p>
+
+<p><strong>Before:</strong> "Addiction is difficult."<br />
+<strong>After:</strong> "You might be feeling overwhelmed right now."</p>
+
+<h3>Low EX (Explorations)</h3>
+
+<p>Ask questions. Invite engagement instead of just stating facts.</p>
+
+<p><strong>Before:</strong> "Contact us for information."<br />
+<strong>After:</strong> "What questions can we answer for you?"</p>
+
+<hr />
+
+<h2>Prioritization</h2>
+
+<p>Start with:</p>
+
+<ol>
+<li>Homepage</li>
+<li>Main service/product pages</li>
+<li>Contact and intake pages</li>
+<li>High-traffic blog posts</li>
+</ol>
+
+<hr />
+
+<h2>Example Output</h2>
+
+<table>
+<thead>
+<tr><th>URL</th><th>Empathy Score</th><th>ER</th><th>IP</th><th>EX</th></tr>
+</thead>
+<tbody>
+<tr><td>/about</td><td>0.42</td><td>0.8</td><td>0.5</td><td>0.3</td></tr>
+<tr><td>/services</td><td>0.18</td><td>0.2</td><td>0.1</td><td>0.2</td></tr>
+<tr><td>/contact</td><td>0.31</td><td>0.6</td><td>0.4</td><td>0.1</td></tr>
+</tbody>
+</table>
+
+<p>In this example, /services needs attention—specifically ER and IP scores.</p>
+
+<hr />
+
+<h2>Resources</h2>
+
+<ul>
+<li><strong>GitHub:</strong> <a href="https://github.com/willdoseo/site-empathy-analysis">github.com/willdoseo/site-empathy-analysis</a></li>
+<li><strong>Models:</strong> <a href="https://huggingface.co/willdoseo/site-empathy-models">huggingface.co/willdoseo/site-empathy-models</a></li>
+<li><strong>Firecrawl:</strong> <a href="https://firecrawl.dev">firecrawl.dev</a></li>
+<li><strong>Research:</strong> Sharma et al. (2020), <a href="https://aclanthology.org/2020.emnlp-main.425/">"A Computational Approach to Understanding Empathy Expressed in Text-Based Mental Health Support"</a> (EMNLP 2020)</li>
+</ul>

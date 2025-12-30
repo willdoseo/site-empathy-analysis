@@ -1,0 +1,82 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "site-empathy-analysis"
+version = "0.1.0"
+description = "Analyze website content for empathy using NLP, powered by Firecrawl and the Sharma et al. (2020) empathy framework"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+keywords = [
+    "empathy",
+    "nlp",
+    "web-crawling",
+    "text-analysis",
+    "mental-health",
+    "content-analysis",
+    "firecrawl"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "torch>=2.0.0",
+    "transformers>=4.30.0",
+    "firecrawl-py>=1.0.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "rich>=13.0.0",
+    "click>=8.0.0",
+    "requests>=2.31.0",
+    "beautifulsoup4>=4.12.0",
+    "tqdm>=4.65.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+]
+
+[project.scripts]
+site-empathy = "site_empathy_analysis.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/site-empathy-analysis"
+Documentation = "https://github.com/yourusername/site-empathy-analysis#readme"
+Repository = "https://github.com/yourusername/site-empathy-analysis"
+Issues = "https://github.com/yourusername/site-empathy-analysis/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+site_empathy_analysis = ["data/*.json", "data/*.csv"]
+
+[tool.black]
+line-length = 100
+target-version = ['py39', 'py310', 'py311', 'py312']
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4"]
+ignore = ["E501"]
+
