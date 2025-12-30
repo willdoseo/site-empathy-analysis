@@ -222,7 +222,7 @@ def get_api_key_interactive() -> str:
 
 def display_result_summary(result):
     """Display empathy results with Blade Runner theming."""
-    score = result.site_stats.get("avg_empathy_score", 0)
+    score = result.mean_empathy_score
     
     # Determine empathy verdict
     if score >= 0.35:
@@ -250,10 +250,10 @@ def display_result_summary(result):
         f"  [dim]{verdict_msg}[/]\n\n"
         f"  [bold]Empathy Score:[/] [{TEAL}]{score:.3f}[/] / 1.000\n\n"
         f"  [bold]Dimension Breakdown:[/]\n"
-        f"  ├─ 🔥 Emotional Reaction: {result.site_stats.get('avg_er_score', 0):.3f}\n"
-        f"  ├─ 🧠 Interpretation:     {result.site_stats.get('avg_ip_score', 0):.3f}\n"
-        f"  └─ 💬 Exploration:        {result.site_stats.get('avg_ex_score', 0):.3f}\n\n"
-        f"  [dim]Pages analyzed: {result.site_stats.get('total_pages', 0)}[/]",
+        f"  ├─ 🔥 Emotional Reaction: {result.pct_with_emotional_reaction:.1f}% of pages\n"
+        f"  ├─ 🧠 Interpretation:     {result.pct_with_interpretation:.1f}% of pages\n"
+        f"  └─ 💬 Exploration:        {result.pct_with_exploration:.1f}% of pages\n\n"
+        f"  [dim]Pages analyzed: {result.page_count}[/]",
         title=f"[{CORAL}]◆ TEST COMPLETE ◆[/]",
         border_style=TEAL,
     ))
