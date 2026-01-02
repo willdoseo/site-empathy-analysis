@@ -432,7 +432,9 @@ def main(ctx):
 @click.option("--max-pages", default=1000, help="Maximum pages to analyze (default: 1000, 0=unlimited)")
 @click.option("--quiet", is_flag=True, help="Minimal output")
 @click.option("--key", envvar="FIRECRAWL_API_KEY", help="Firecrawl API key")
-def analyze(url: str, output: Optional[str], max_pages: int, quiet: bool, key: Optional[str]):
+@click.option("--html", type=click.Path(), help="Also generate HTML dashboard report")
+@click.option("--json", type=click.Path(), help="Also generate JSON data export")
+def analyze(url: str, output: Optional[str], max_pages: int, quiet: bool, key: Optional[str], html: Optional[str], json: Optional[str]):
     """
     Run empathy test on a single website (non-interactive).
     
@@ -456,15 +458,27 @@ def analyze(url: str, output: Optional[str], max_pages: int, quiet: bool, key: O
         analyzer = SiteEmpathyAnalyzer(firecrawl_key=api_key)
         result = analyzer.analyze_site(url, max_pages=max_pages, show_progress=not quiet)
         
-        # Save output
+        # Save CSV output
         if output:
             output_path = Path(output)
             result.to_csv(output_path)
-            console.print(f"\n[{TEAL}]✓ Report saved to:[/] {output_path}")
+            console.print(f"\n[{TEAL}]✓ CSV Report saved to:[/] {output_path}")
         else:
             default_output = f"{result.domain.replace('.', '_')}_voightkampff.csv"
             result.to_csv(default_output)
-            console.print(f"\n[{TEAL}]✓ Report saved to:[/] {default_output}")
+            console.print(f"\n[{TEAL}]✓ CSV Report saved to:[/] {default_output}")
+        
+        # Save HTML dashboard if requested
+        if html:
+            html_path = Path(html)
+            result.to_html(html_path)
+            console.print(f"[{TEAL}]✓ HTML Dashboard saved to:[/] {html_path}")
+        
+        # Save JSON export if requested
+        if json:
+            json_path = Path(json)
+            result.to_json(json_path)
+            console.print(f"[{TEAL}]✓ JSON Export saved to:[/] {json_path}")
         
         if not quiet:
             display_result_summary(result)
