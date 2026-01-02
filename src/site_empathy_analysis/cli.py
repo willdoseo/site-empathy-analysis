@@ -385,7 +385,7 @@ def run_interactive():
             show_progress=True
         )
         
-        # Save output
+        # Save CSV output
         output_file = Path(output_path)
         result.to_csv(output_file)
         
@@ -393,7 +393,19 @@ def run_interactive():
         display_result_summary(result)
         
         console.print()
-        console.print(f"[{TEAL}]✓[/] Full report saved to: [bold]{output_file.absolute()}[/]")
+        console.print(f"[{TEAL}]✓[/] CSV report saved to: [bold]{output_file.absolute()}[/]")
+        
+        # Ask about additional export formats
+        console.print()
+        if Confirm.ask(f"[{TEAL}]Generate HTML dashboard report?[/]", default=True):
+            html_file = output_file.with_suffix('.html')
+            result.to_html(html_file)
+            console.print(f"[{TEAL}]✓[/] HTML dashboard saved to: [bold]{html_file.absolute()}[/]")
+        
+        if Confirm.ask(f"[{TEAL}]Generate JSON data export?[/]", default=False):
+            json_file = output_file.with_suffix('.json')
+            result.to_json(json_file)
+            console.print(f"[{TEAL}]✓[/] JSON export saved to: [bold]{json_file.absolute()}[/]")
         
         # Random closing quote
         show_quote()
