@@ -19,12 +19,13 @@ Site Empathy Analysis crawls websites and measures how empathetic their content 
 | 🧠 **Interpretations** | Understanding, acknowledging feelings | "It sounds like you're feeling overwhelmed" |
 | 💬 **Explorations** | Engagement, inviting dialogue | "Can you tell me more about what happened?" |
 
-The output is a detailed **CSV report** with:
-- Page-level empathy scores (0-1 scale)
-- Dimension breakdowns (ER, IP, EX)
-- Empathic phrases detected
-- Non-empathic language indicators
-- Aggregate site statistics
+The tool provides **comprehensive reporting** with:
+- 📊 **Interactive HTML dashboards** with charts and visualizations
+- 📈 **Enhanced terminal output** with histograms and progress bars
+- 📁 **Multiple export formats** (CSV, JSON, HTML)
+- 🎯 **Actionable insights** with specific recommendations
+- 📑 **Page-level grades** (A-F) and empathy profiles
+- 🔝 **Top/bottom page identification** with content previews
 
 ## 🚀 Quick Start
 
@@ -63,6 +64,24 @@ site-empathy analyze example.com --max-pages 50 -o report.csv
 site-empathy batch sites.txt -o reports/
 ```
 
+### ✨ What You'll See
+
+The tool provides **rich terminal output** with:
+- 📊 Overall grade (A-F) and key metrics
+- 📈 Visual progress bars for each empathy dimension
+- 📉 ASCII histogram of score distribution
+- 🌟 Top 5 performing pages with grades and profiles
+- ⚠️ Bottom 5 pages needing attention
+- 💡 Actionable insights and specific recommendations
+- 📁 Export suggestions for HTML, CSV, and JSON formats
+
+**Plus beautiful HTML reports** with:
+- 📊 Interactive Chart.js visualizations
+- 🎯 Detailed page-by-page breakdown with content previews
+- 🌈 Color-coded grades and empathy profiles
+- 💬 Language analysis with most common phrases
+- 📈 Score distribution charts and dimension radar plots
+
 ## 📊 Output Format
 
 ### Page-Level CSV
@@ -92,6 +111,8 @@ https://example.com/services,example.com,Our Services,0.156,0.05,...
 
 ## 💻 Python API
 
+### Basic Usage
+
 ```python
 from site_empathy_analysis import SiteEmpathyAnalyzer
 
@@ -105,11 +126,62 @@ result = analyzer.analyze_site("https://example.com", max_pages=100)
 print(f"Mean empathy: {result.mean_empathy_score:.3f}")
 print(f"Pages with emotional warmth: {result.pct_with_emotional_reaction:.1f}%")
 
-# Export to CSV
-result.to_csv("empathy_report.csv")
+# Get overall grade (A-F)
+print(f"Overall grade: {result._get_overall_grade()}")
+```
 
-# Get page-level dataframe
+### 📊 Export Options
+
+```python
+# 1. HTML Report (Interactive Dashboard with Charts)
+result.to_html("empathy_report.html")
+# → Beautiful report with Chart.js visualizations, top/bottom pages, insights
+
+# 2. CSV Export (Page-level data for Excel/Tableau)
+result.to_csv("empathy_data.csv")
+# → Spreadsheet-ready format with all metrics
+
+# 3. JSON Export (Complete analysis data)
+result.to_json("empathy_full.json")
+# → Structured data for APIs, custom dashboards, further processing
+
+# 4. DataFrame (Python analysis)
 df = result.to_dataframe()
+# → Pandas DataFrame for data science workflows
+```
+
+### 📈 Advanced Analysis
+
+```python
+# Get score distribution
+distribution = result.get_score_distribution()
+print(distribution)  # {'F (0-0.1)': 5, 'D (0.1-0.2)': 3, ...}
+
+# Get top performing pages
+top_pages = result.get_top_pages(5)
+for page in top_pages:
+    print(f"{page.title}: {page.empathy_score:.3f} ({page.get_grade()})")
+    print(f"  Profile: {page.get_empathy_profile()}")
+    print(f"  Empathic phrases: {page.empathic_phrases[:3]}")
+
+# Get pages needing improvement
+bottom_pages = result.get_bottom_pages(5)
+for page in bottom_pages:
+    print(f"⚠️ {page.title}: {page.empathy_score:.3f}")
+    if page.er_level == 0:
+        print("  → Add emotional warmth")
+    if page.ip_level == 0:
+        print("  → Show more understanding")
+
+# Filter DataFrame by criteria
+high_empathy = df[df['empathy_score'] >= 0.3]
+print(f"High empathy pages: {len(high_empathy)}/{len(df)}")
+
+# Find pages with specific patterns
+warmth_no_understanding = [
+    p for p in result.pages 
+    if p.er_level >= 1 and p.ip_level == 0
+]
 ```
 
 ### Batch Analysis
@@ -200,6 +272,33 @@ site-empathy info
 ```
 
 ## 📈 Understanding Scores
+
+### Letter Grades (New!)
+
+Each page and site receives an overall grade:
+
+| Grade | Score Range | Description |
+|-------|-------------|-------------|
+| **A** | 0.40+ | Excellent empathy - warm, understanding, engaging |
+| **B** | 0.30-0.40 | Good empathy - solid warmth and understanding |
+| **C** | 0.20-0.30 | Moderate - some empathy but room for improvement |
+| **D** | 0.10-0.20 | Low empathy - mostly clinical/transactional tone |
+| **F** | <0.10 | Very low - lacks emotional connection |
+
+### Empathy Profiles (New!)
+
+Pages are categorized by which dimensions they exhibit:
+
+| Profile | Dimensions | Description |
+|---------|-----------|-------------|
+| 🌟 **Full Empathy** | ER + IP + EX | Warm, understanding, AND engaging |
+| 💚 **Empathic** | ER + IP | Warm and understanding (most desirable) |
+| 💛 **Warm & Engaging** | ER + EX | Friendly but lacks depth |
+| 💙 **Understanding & Engaging** | IP + EX | Informative dialogue but cold |
+| 🟠 **Emotionally Warm Only** | ER only | Caring but superficial |
+| 🔵 **Understanding Only** | IP only | Clinical - explains but doesn't connect |
+| 🟣 **Engaging Only** | EX only | Asks questions without warmth |
+| ⚪ **Minimal Empathy** | None | Transactional/factual only |
 
 ### Empathy Score Scale
 
